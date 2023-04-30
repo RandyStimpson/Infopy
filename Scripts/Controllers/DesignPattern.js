@@ -268,12 +268,10 @@ app.controller("designPatternCtrl", function ($scope) {
         var p;
         sum = 0;
 
-        //TODO can be optimized to reduce calls to Math.log()
         for (i = 0; i <= $scope.info.length; i++) {
-//          if (belongsTo[i] < 0) p = pOfMiss(-belongsTo[i]) * pOfBeingInMissSegment;
-            if (belongsTo[i] < 0) p = pOfMiss(-belongsTo[i]);
-            if (belongsTo[i] > 0) p = pOfMatch(belongsTo[i]) * pOfBeingInMatchSegment;
-            sum += p * Math.log(p);
+           if (belongsTo[i] < 0) p = pOfMiss(-belongsTo[i]); 
+           if (belongsTo[i] > 0) p = pOfMatch(belongsTo[i]);
+           sum += p * Math.log(p);
         }
         return -sum;
     }
