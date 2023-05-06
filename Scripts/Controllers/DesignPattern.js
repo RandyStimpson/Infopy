@@ -50,10 +50,10 @@ app.controller("designPatternCtrl", function ($scope) {
         var text = "";
         var i = 0;
 
-        for (i = 1; i <= 50; i++) {
+        for (i = 1; i <= 196; i++) {
             text += makeRandomSizedMatch();
         }
-
+        console.log("Organized text size: " + text.length);
         $scope.info = text;
         $scope.formattedText = formatText($scope.info);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
@@ -99,7 +99,7 @@ app.controller("designPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        $scope.info = app.makeRandomText(1000, characterSet1);
+        $scope.info = app.makeRandomText(3800, characterSet1);
         $scope.formattedText = formatText($scope.info);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
         normalizingFactor = 10000 / $scope.entropy;
