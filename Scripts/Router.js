@@ -10,9 +10,9 @@
                     templateUrl: 'Views/DesignPattern.html'
                 })
 
-                .when('/Words',
+                .when('/NestedDesignPattern',
                 {
-                    templateUrl: 'Views/Words.html'
+                    templateUrl: 'Views/NestedDesignPattern.html'
                 })
 
                 .otherwise({ redirectTo: '/' });

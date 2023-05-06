@@ -1,5 +1,5 @@
-﻿<div class="view" ng-controller="wordsCtrl">
-   <div class="view-title">Entropy based on words</div>
+﻿<div class="view" ng-controller="nestedDesignPatternCtrl">
+   <div class="view-title">Entropy in relation to a Nested Design Pattern</div>
     <div class="information-box break-words"><div ng-bind-html="formattedText"></div></div>
     <button ng-click="makeChange()">Make Change</button>
     <button id="mcc" ng-click="makeContinuousChanges()">Make Continuous Changes</button>
@@ -7,6 +7,7 @@
         <button ng-click="scrambleText()">Scramble</button>
         <button ng-click="makeRandomText()">Random</button>
         <button ng-click="makeOrganizedText()">Organize</button>
+        <button ng-click="evolve()">Evolve</button>
     </div>
     <div class="information-group">
         <div>Entropy: {{ entropy | number : 5}}</div>
