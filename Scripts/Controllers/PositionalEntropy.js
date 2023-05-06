@@ -3,20 +3,23 @@ app.controller("positionalEntropyCtrl", function ($scope) {
     //Choosing a character set with 64 characters will give us a maximum entropy of 6 bits per character
     var CHARACTER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -;:?,.!'123";
 
-    var startingText = "EINSTEIN QUOTES: Great spirits have often encountered violent opposition from weak minds.";
-    startingText += " The important thing is not to stop questioning. Curiosity has its own reason for existing.";
-    startingText += " I want to know God's thoughts; the rest are details.";
-    startingText += " Anyone who has never made a mistake has never tried anything new.";
-    startingText += " Everything should be made as simple as possible, but not simpler.";
-    startingText += " He who joyfully marches to music rank and file, has already earned my contempt. He has been given a large brain by mistake, since for him the spinal cord would surely suffice. This disgrace to civilization should be done away with at once. Heroism at command, how violently I hate all this, how despicable and ignoble war is; I would rather be torn to shreds than be a part of so base an action. It is my conviction that killing under the cloak of war is nothing but an act of murder.";
-    startingText += " God is subtle but he is not malicious.";
-    startingText += " We can't solve problems by using the same kind of thinking we used when we created them.";
-    startingText += " The only thing that interferes with my learning is my education.";
-    startingText += " Science without religion is lame. Religion without science is blind.";
+    var startingText = readFileToString("TEXTBOX.md");
+    
 
-    //Add space the make text length a multiple of 64 to that a maximum entropy of 6 can is possible
-    startingText += "                                        "
-    console.log(startingText.length % 64);
+    function readFileToString(fileName) {
+        let fileContent = null;
+        $.ajax({
+          url: fileName,
+          async: false,
+          success: function(data) {
+            fileContent = data;
+          },
+          error: function(xhr, status, error) {
+            console.error(`Failed to read file: ${fileName} (status ${xhr.status})`);
+          }
+        });
+        return fileContent;
+    }
 
     // TODO: In order to be able to reach a maximum entropy of 6, the number of text characters needs to be a multiple
     // of 64, the number of characters in the character set.
@@ -29,7 +32,7 @@ app.controller("positionalEntropyCtrl", function ($scope) {
 
     // TODO: Predict the percentage of character configration with an entropy less that 5
 
-
+    // Load
     $scope.initialize = function () {
 
         $scope.info = startingText;

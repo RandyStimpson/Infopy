@@ -36,15 +36,15 @@ body {
 
 #app-wrapper {
     width: 1200px;
-    margin: 80px auto;
-    font-size: 20px;
+    margin: 10px auto;
+    font-size: 14px;
 }
 
 #view-wrapper {
     clear: both;
     background: #9CC2F1;
     padding: 20px;
-    height: 600px;
+    height: 720px;
 }
 
 .tab-link-container {}
@@ -73,7 +73,7 @@ body {
 }
 
 .information-box {
-    height: 300px;
+    height: 440px;
     background: white;
     margin: 10px 0px 10px 0px;
     padding: 5px;
