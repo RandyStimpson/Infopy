@@ -42,3 +42,15 @@ app.makeRandomText = function (length, characterSet) {
     }
     return s;
 }
+
+app.randomUppercaseLetter = function() {
+   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   var randomIndex = Math.floor(25.99 * Math.random());
+   return alphabet.charAt(randomIndex);
+}
+
+app.randomPunctuation = function() {
+    const punctuationSet = ".!:";
+    var randomIndex = Math.floor(2.99 * Math.random());
+    return punctuationSet.charAt(randomIndex);
+ }

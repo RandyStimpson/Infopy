@@ -23,17 +23,77 @@
 
 app.controller("nestedDesignPatternCtrl", function ($scope) {
 
+    const textSize = 3800;
+    const minSemiPalondromeSize = 12;
     $scope.formattedText = "Coming Soon";
+    var organizedIntegrationTable = [];
+
 
     var init = function () {
     }
 
     $scope.makeOrganizedText = function () {
-        init();
+        var text = "";
+        var i = 0;
+        organizedIntegrationTable = makeOrganizedIntegrationTable();
+        while (text.length < textSize) {
+            text += makeRandomSizedNestedPattern();
+        }
+        console.log("Organized text size: " + text.length);
+        $scope.info = text;
+        $scope.formattedText = formatText($scope.info);
+        $scope.entropy = computeEntropyBasedOnDesignPattern();
+        normalizingFactor = 1 / $scope.entropy;
+        $scope.normalizedEntropy = 1;
+        $scope.maximumEntropy = 1;
+        $scope.minimunEntropySinceMax = 1;
+    }
+
+    var makeRandomSizedNestedPattern = function() {
+        var nestedPatternSize = 14 + Math.floor(16 * Math.random());
+        
+        //Make a semipalendrome of random size that that fits inside the nested pattern
+        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize-2-minSemiPalondromeSize) * Math.random());
+        innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
+        var stemSize = (innerPatternSize - 4) /2;
+        var stem = makeRandomLowerCaseText(stemSize);
+        var reverseStem = stem.split("").reverse().join("");
+        var innerPattern = stem + organizedIntegrationTable[Math.floor(10* Math.random())] + reverseStem;
+
+        //Embed the inner pattern randomly
+        var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
+        var result = makeRandomLowerCaseText(startPosition) + innerPattern + makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition  -2);
+        result = app.randomUppercaseLetter() + result + app.randomPunctuation();
+        return result;
+    }
+
+    var makeOrganizedIntegrationTable = function () {
+        var result = [];
+        for(var i = 0; i<10; i++) {
+            result[i] = makeRandomLowerCaseText(4);
+        }
+        console.log(result);
+        return result;
+    }
+
+    var makeRandomLowerCaseText = function(length) {
+        let result = '';
+        const characters = 'abcdefghijklmnopqrstuvwxyz';
+      
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+      
+        return result;
+      }
+
+    $scope.makeRandomSizePattern = function ()
+    {
+
     }
 
     $scope.makeRandomText = function () {
-        text = app.makeRandomText(1000, characterSet);
+        text = app.makeRandomText(3800, characterSet);
         $scope.formattedText = formatText(text);
         $scope.entropy = calculateEntropy();
     }

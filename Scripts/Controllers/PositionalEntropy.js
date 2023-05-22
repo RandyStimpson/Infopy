@@ -4,6 +4,7 @@ app.controller("positionalEntropyCtrl", function ($scope) {
     var CHARACTER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -;:?,.!'123";
 
     var startingText = readFileToString("TEXTBOX.md");
+    console.log(startingText.length);
     
 
     function readFileToString(fileName) {

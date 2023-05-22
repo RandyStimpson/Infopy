@@ -28,6 +28,7 @@ app.controller("designPatternCtrl", function ($scope) {
     var punctuationSet = ".!:";
     var belongsTo = [];
     var normalizingFactor;
+    const textSize = 3800;
 
     init = function () {
         $scope.makeRandomText();
@@ -50,7 +51,7 @@ app.controller("designPatternCtrl", function ($scope) {
         var text = "";
         var i = 0;
 
-        for (i = 1; i <= 196; i++) {
+        while (text.length < textSize) {
             text += makeRandomSizedMatch();
         }
         console.log("Organized text size: " + text.length);
@@ -99,7 +100,7 @@ app.controller("designPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        $scope.info = app.makeRandomText(3800, characterSet1);
+        $scope.info = app.makeRandomText(textSize, characterSet1);
         $scope.formattedText = formatText($scope.info);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
         normalizingFactor = 10000 / $scope.entropy;
@@ -281,8 +282,8 @@ app.controller("designPatternCtrl", function ($scope) {
     }
 
     makeRandomSizedMatch = function () {
-        //Vary size randomly between 10 and 30
-        var randomSize = Math.floor(10 + 20 * Math.random());
+        //Vary size randomly between 14 and 30
+        var randomSize = Math.floor(14 + 17 * Math.random());
         return makeRandomMatch(randomSize);
     }
 
