@@ -64,7 +64,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
         var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition  -2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
-        console.log(result.length + ' ' + result);
         return result;
     }
 
@@ -73,7 +72,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         for(var i = 0; i<10; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
-        console.log(result);
         return result;
     }
 

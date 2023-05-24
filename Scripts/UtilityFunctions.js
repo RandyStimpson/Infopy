@@ -1,4 +1,8 @@
-﻿app.scrambleText = function (text) {
+﻿const characterSet1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.!:";
+const characterSet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const punctuationSet = ".!:";
+
+app.scrambleText = function (text) {
     var scrambledText = "";
     var i;
     var randomIndex;
@@ -36,7 +40,7 @@ app.makeRandomText = function (length, characterSet) {
     var i;
     var s = "";
     for (i = 1; i <= length; i++) {
-        randomIndex = Math.floor(characterSet.length * Math.random());
+        randomIndex = Math.floor((characterSet.length - 0.01) * Math.random());
         randomChar = characterSet.substr(randomIndex, 1);
         s += randomChar;
     }
@@ -50,7 +54,6 @@ app.randomUppercaseLetter = function() {
 }
 
 app.randomPunctuation = function() {
-    const punctuationSet = ".!:";
     var randomIndex = Math.floor(2.99 * Math.random());
     return punctuationSet.charAt(randomIndex);
  }
@@ -60,7 +63,7 @@ app.randomPunctuation = function() {
   
     let result = '';
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
+      result += characters.charAt(Math.floor(Math.random() * (characters.length - 0.01)));
     }
     return result;
   }

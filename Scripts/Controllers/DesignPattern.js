@@ -23,9 +23,6 @@
 */
 app.controller("designPatternCtrl", function ($scope) {
 
-    var characterSet1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.!:";
-    var characterSet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    var punctuationSet = ".!:";
     var belongsTo = [];
     var normalizingFactor;
     const textSize = 3800;
