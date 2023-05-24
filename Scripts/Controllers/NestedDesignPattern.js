@@ -56,36 +56,27 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize-2-minSemiPalondromeSize) * Math.random());
         innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
         var stemSize = (innerPatternSize - 4) /2;
-        var stem = makeRandomLowerCaseText(stemSize);
+        var stem = app.makeRandomLowerCaseText(stemSize);
         var reverseStem = stem.split("").reverse().join("");
         var innerPattern = stem + organizedIntegrationTable[Math.floor(10* Math.random())] + reverseStem;
 
         //Embed the inner pattern randomly
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
-        var result = makeRandomLowerCaseText(startPosition) + innerPattern + makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition  -2);
+        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition  -2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
+        console.log(result.length + ' ' + result);
         return result;
     }
 
     var makeOrganizedIntegrationTable = function () {
         var result = [];
         for(var i = 0; i<10; i++) {
-            result[i] = makeRandomLowerCaseText(4);
+            result[i] = app.makeRandomLowerCaseText(4);
         }
         console.log(result);
         return result;
     }
 
-    var makeRandomLowerCaseText = function(length) {
-        let result = '';
-        const characters = 'abcdefghijklmnopqrstuvwxyz';
-      
-        for (let i = 0; i < length; i++) {
-          result += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-      
-        return result;
-      }
 
     $scope.makeRandomSizePattern = function ()
     {
@@ -134,12 +125,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
 
-    var makeNestedIntegratedDesignPattern = function () {
-        var i, pattern = "";
-        // To be supplied
-        return pattern;
-    }
-
+    
 
     var delimiterCount;
     var calculateEntropy = function () {

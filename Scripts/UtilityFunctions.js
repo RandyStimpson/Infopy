@@ -54,3 +54,13 @@ app.randomPunctuation = function() {
     var randomIndex = Math.floor(2.99 * Math.random());
     return punctuationSet.charAt(randomIndex);
  }
+
+ app.makeRandomLowerCaseText = function(length) {
+    const characters = 'abcdefghijklmnopqrstuvwxyz';
+  
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
