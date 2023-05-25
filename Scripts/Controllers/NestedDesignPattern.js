@@ -29,6 +29,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     var organizedIntegrationTable = [];
 
 
+
     var init = function () {
     }
 
@@ -49,36 +50,111 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.minimunEntropySinceMax = 1;
     }
 
-    var makeRandomSizedNestedPattern = function() {
+    var makeRandomSizedNestedPattern = function () {
         var nestedPatternSize = 14 + Math.floor(16 * Math.random());
-        
+
         //Make a semipalendrome of random size that that fits inside the nested pattern
-        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize-2-minSemiPalondromeSize) * Math.random());
+        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
         innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
-        var stemSize = (innerPatternSize - 4) /2;
+        var stemSize = (innerPatternSize - 4) / 2;
         var stem = app.makeRandomLowerCaseText(stemSize);
         var reverseStem = stem.split("").reverse().join("");
-        var innerPattern = stem + organizedIntegrationTable[Math.floor(10* Math.random())] + reverseStem;
+        var innerPattern = stem + organizedIntegrationTable[Math.floor(10 * Math.random())] + reverseStem;
 
         //Embed the inner pattern randomly
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
-        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition  -2);
+        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
         return result;
     }
 
     var makeOrganizedIntegrationTable = function () {
         var result = [];
-        for(var i = 0; i<10; i++) {
+        for (var i = 0; i < 10; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
         return result;
     }
 
+    let characterProperties = [{}];
 
-    $scope.makeRandomSizePattern = function ()
-    {
+    // Format text by highlighting nested design pattern parts
+    formatText = function (text, changeIndex) {
+        if (changeIndex === undefined) changeIndex = -1;
+        var segment, miss, match;
+        var i = 0;
+        var j;
+        var formattedText = "";
+        var bi = 0; //belongsToIndex;
 
+        do {
+            segment = app.getPunctuationDelimitedSegment(text, i);
+            let segmentParts = app.splitSegment(segment);
+
+            //Format the miss portion of the segment
+            if (changeIndex >= i && changeIndex < i + segmentParts.miss.length) {
+                //The change occurred inside the miss
+                formattedText += segmentParts.miss.substr(0, changeIndex - i);
+                formattedText += '<span class="change-text">' + segmentParts.miss.charAt(changeIndex - i) + '</span>';
+                formattedText += segmentParts.miss.substr(changeIndex - i + 1);
+            } else {
+                formattedText += segmentParts.miss;
+            }
+            i += segmentParts.miss.length;
+
+            //Format the match portion of the segment
+            if (changeIndex >= i && changeIndex < i + segmentParts.match.length) {
+                //The change occurred inside the match
+                formattedText += '<span class="match">' + segmentParts.match.substr(0, changeIndex - i);
+                formattedText += '<span class="change-text">' + segmentParts.match.charAt(changeIndex - i) + '</span>';
+                formattedText += segmentParts.match.substr(changeIndex - i + 1) + '</span>';
+            } else {
+                segmentParts = detectInnerPattern(segmentParts);
+                if (segmentParts.innerPattern === undefined) {
+                    formattedText += '<span class="matchLeft">' + segmentParts.match + '</span>';
+                } else {
+                    formattedText += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
+                    formattedText += '<span class="innerPattern">' + segmentParts.innerPattern + '</span>';
+                    formattedText += '<span class="matchRight">' + segmentParts.matchRight + '</span>';
+                }
+            }
+            i += segmentParts.match.length;
+
+            //Compute the values of characterProperties[] so that they can be used in the entropy calculation
+            characterProperties[bi] = {};
+            characterProperties[bi].matchLength = 4;
+            for (j = 0; j < segmentParts.miss.length; j++)
+                characterProperties[bi++].missLength = -segmentParts.miss.length;
+            for (j = 0; j < segmentParts.match.length; j++) {
+                characterProperties[bi] = {};
+                characterProperties[bi++].matchLength = segmentParts.match.length;
+            }
+
+        } while (i < text.length);
+
+        return formattedText;
+    }
+
+    detectInnerPattern = function (segment) {
+        //The inner pattern has a minimum length of 12 so with end point the match must be a minimum of length to hold a pattern
+        if (segment.match < 14)
+            return segment;
+
+        for (i = 5; i < segment.match.length - 5; i++) {
+            leftIndex = i - 1;
+            rightIndex = i + 4;
+            stemLength = 0;
+            while (segment.match.charAt(leftIndex--) === segment.match.charAt(rightIndex++))
+                stemLength++;
+            if (stemLength >= 4) {
+                segment.matchLeft = segment.match.substr(0, i - stemLength);
+                segment.innerPattern = segment.match.substr(segment.matchLeft.length, 2 * stemLength + 4);
+                segment.innerPatternLoop = segment.match.substr(i, 4);
+                segment.matchRight = segment.match.substr(segment.matchLeft.length + segment.innerPattern.length);
+            }
+        }
+        console.log(segment);
+        return segment;
     }
 
     $scope.makeRandomText = function () {
@@ -117,13 +193,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
 
-
-    var formatText = function (text, changeIndex) {
-        return formattedText;
-    }
-
-
-    
 
     var delimiterCount;
     var calculateEntropy = function () {

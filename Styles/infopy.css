@@ -93,10 +93,22 @@ body {
 }
 
 .match {
-    background: #6472D1;
-    background: #74CC98;
     background: #BDCCC2;
     margin: 0px 1px 0px 1px;
+}
+
+.matchLeft {
+    background: #BDCCC2;
+    margin: 0px 0px 0px 1px;
+}
+
+.matchRight {
+    background: #BDCCC2;
+    margin: 0px 1px 0px 0px;
+}
+
+.innerPattern {
+    background: #95BBBE;
 }
 
 .word {

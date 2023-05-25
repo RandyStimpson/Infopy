@@ -176,8 +176,8 @@ app.controller("designPatternCtrl", function ($scope) {
         totalCharactersInMatchSegments = 0;
 
         do {
-            segment = getPunctuationDelimitedSegment(text, i);
-            var segmentParts = splitSegment(segment);
+            segment = app.getPunctuationDelimitedSegment(text, i);
+            let segmentParts = app.splitSegment(segment);
 
             //Format the miss portion of the segment
             if (changeIndex >= i && changeIndex < i + segmentParts.miss.length) {
@@ -217,49 +217,6 @@ app.controller("designPatternCtrl", function ($scope) {
         return formattedText;
     }
 
-    getPunctuationDelimitedSegment = function (text, start) {
-
-        var end = start;
-        do {
-            var ch = text.substr(end, 1);
-            end++;
-        } while ((end < text.length) && (punctuationSet.indexOf(ch) == -1))
-        return text.substr(start, end - start);
-    }
-
-    // Split a segment into a miss part and a match part
-    splitSegment = function (segment) {
-        var result = {};
-        var i;
-
-        // If segment is only 2 characters long the whole thing is a miss
-        if (segment.length <= 2) {
-            result.miss = segment;
-            result.match = "";
-        }
-
-        // If the segment doesn't end with a punctuation mark the whole thing is a miss
-        else if (punctuationSet.indexOf(segment.slice(-1)) == -1) {
-            result.miss = segment;
-            result.match = "";
-        } else {
-            //Find the index of the first uppercase character of the string going backwards
-            var index = segment.length - 1;
-            do {
-                index--;
-                var ch = segment.charAt(index);
-            } while ((index >= 0) && (ch === ch.toLowerCase()));
-
-            if ((index < 0) || (index == segment.length - 2)) {
-                result.miss = segment;
-                result.match = "";
-            } else {
-                result.miss = segment.substr(0, index);
-                result.match = segment.substr(index);
-            }
-        }
-        return result;
-    }
 
     computeEntropyBasedOnDesignPattern = function () {
         var i;

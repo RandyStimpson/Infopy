@@ -47,22 +47,67 @@ app.makeRandomText = function (length, characterSet) {
     return s;
 }
 
-app.randomUppercaseLetter = function() {
-   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-   var randomIndex = Math.floor(25.99 * Math.random());
-   return alphabet.charAt(randomIndex);
+app.randomUppercaseLetter = function () {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var randomIndex = Math.floor(25.99 * Math.random());
+    return alphabet.charAt(randomIndex);
 }
 
-app.randomPunctuation = function() {
+app.randomPunctuation = function () {
     var randomIndex = Math.floor(2.99 * Math.random());
     return punctuationSet.charAt(randomIndex);
- }
+}
 
- app.makeRandomLowerCaseText = function(length) {
+app.makeRandomLowerCaseText = function (length) {
     const characters = 'abcdefghijklmnopqrstuvwxyz';
     let result = '';
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * (characters.length - 0.01)));
+        result += characters.charAt(Math.floor(Math.random() * (characters.length - 0.01)));
     }
     return result;
-  }
+}
+
+app.getPunctuationDelimitedSegment = function (text, start) {
+
+    var end = start;
+    do {
+        var ch = text.substr(end, 1);
+        end++;
+    } while ((end < text.length) && (punctuationSet.indexOf(ch) == -1))
+    return text.substr(start, end - start);
+}
+
+// Split a segment into a miss part and a match part
+app.splitSegment = function (segment) {
+    var result = {};
+    var i;
+
+    // If segment is only 2 characters long the whole thing is a miss
+    if (segment.length <= 2) {
+        result.miss = segment;
+        result.match = "";
+    }
+
+    // If the segment doesn't end with a punctuation mark the whole thing is a miss
+    else if (punctuationSet.indexOf(segment.slice(-1)) == -1) {
+        result.miss = segment;
+        result.match = "";
+    } else {
+        //Find the index of the first uppercase character of the string going backwards
+        var index = segment.length - 1;
+        do {
+            index--;
+            var ch = segment.charAt(index);
+        } while ((index >= 0) && (ch === ch.toLowerCase()));
+
+        if ((index < 0) || (index == segment.length - 2)) {
+            result.miss = segment;
+            result.match = "";
+        } else {
+            result.miss = segment.substr(0, index);
+            result.match = segment.substr(index);
+        }
+    }
+    return result;
+}
+
