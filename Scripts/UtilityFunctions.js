@@ -60,7 +60,6 @@ app.randomPunctuation = function() {
 
  app.makeRandomLowerCaseText = function(length) {
     const characters = 'abcdefghijklmnopqrstuvwxyz';
-  
     let result = '';
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * (characters.length - 0.01)));
