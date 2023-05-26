@@ -34,20 +34,20 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeOrganizedText = function () {
-        var text = "";
-        var i = 0;
+        let text = "";
+        let i = 0;
         organizedIntegrationTable = makeOrganizedIntegrationTable();
         while (text.length < textSize) {
             text += makeRandomSizedNestedPattern();
         }
-        console.log("Organized text size: " + text.length);
         $scope.info = text;
         $scope.formattedText = formatText($scope.info);
-        $scope.entropy = computeEntropyBasedOnDesignPattern();
+        //$scope.entropy = computeEntropyBasedOnDesignPattern();
         normalizingFactor = 1 / $scope.entropy;
         $scope.normalizedEntropy = 1;
         $scope.maximumEntropy = 1;
         $scope.minimunEntropySinceMax = 1;
+        makeTextMetaData(text);
     }
 
     var makeRandomSizedNestedPattern = function () {
@@ -59,7 +59,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var stemSize = (innerPatternSize - 4) / 2;
         var stem = app.makeRandomLowerCaseText(stemSize);
         var reverseStem = stem.split("").reverse().join("");
-        var innerPattern = stem + organizedIntegrationTable[Math.floor(10 * Math.random())] + reverseStem;
+        var innerPattern = stem + organizedIntegrationTable[Math.floor(organizedIntegrationTable.length * Math.random())] + reverseStem;
 
         //Embed the inner pattern randomly
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
@@ -70,7 +70,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
     var makeOrganizedIntegrationTable = function () {
         var result = [];
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
         return result;
@@ -116,6 +116,11 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
                     formattedText += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
                     formattedText += '<span class="innerPattern">' + segmentParts.innerPattern + '</span>';
                     formattedText += '<span class="matchRight">' + segmentParts.matchRight + '</span>';
+
+                    innerPattern = segmentParts.innerPattern;
+                    loop = innerPattern.substr((innerPattern.length - 4) / 2, 4);
+                    insertLoop(loop);
+
                 }
             }
             i += segmentParts.match.length;
@@ -135,6 +140,59 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return formattedText;
     }
 
+
+    // Format text by highlighting nested design pattern parts
+    makeTextMetaData = function (text) {
+        let textMetaData = [];
+        let segment;
+        let i = 0;
+        do {
+            segment = app.getPunctuationDelimitedSegment(text, i);
+            segmentParts = app.splitSegment(segment);
+            segmentParts = detectInnerPattern(segmentParts);
+            if (segmentParts.innerPattern !== undefined) {
+                insertLoop(segmentParts.innerPatternLoop);
+            }
+            textMetaData.push(segmentParts)
+            i += segment.length;
+        } while (i < text.length);
+
+        textMetaData.forEach(item => {
+            if(item.innerPatternLoop !== undefined) {
+                item.integrationLevel = getIntegrationLevel(item.innerPatternLoop);
+            }
+        });
+        console.log(textMetaData[0]);
+        return textMetaData;
+    }
+
+    var loopTable = [];
+    insertLoop = function (loop) {
+        loopIsInTable = false;
+        loopTable.forEach(element => {
+            if (element.loop === loop) {
+                element.count++;
+                loopIsInTable = true;
+                return true;
+            }
+        });
+        if (!loopIsInTable) {
+            loopTable[loopTable.length] = {
+                loop: loop,
+                count: 1
+            };
+            return false;
+        }
+    }
+
+    getIntegrationLevel = function(loop) {
+        for (i=0; i<loopTable.length; i++) {
+            if (loopTable[i].loop == loop) {
+                return loopTable[i].count;
+            }
+        }
+    }
+
     detectInnerPattern = function (segment) {
         //The inner pattern has a minimum length of 12 so with end point the match must be a minimum of length to hold a pattern
         if (segment.match < 14)
@@ -148,12 +206,13 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
                 stemLength++;
             if (stemLength >= 4) {
                 segment.matchLeft = segment.match.substr(0, i - stemLength);
+                segment.innerPatternLeft = segment.match.substr(segment.matchLeft.length, stemLength);
                 segment.innerPattern = segment.match.substr(segment.matchLeft.length, 2 * stemLength + 4);
                 segment.innerPatternLoop = segment.match.substr(i, 4);
+                segment.innerPatternRight = segment.match.substr(i + 4, stemLength);
                 segment.matchRight = segment.match.substr(segment.matchLeft.length + segment.innerPattern.length);
             }
         }
-        console.log(segment);
         return segment;
     }
 
