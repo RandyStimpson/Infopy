@@ -27,6 +27,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     const minSemiPalondromeSize = 12;
     $scope.formattedText = "Coming Soon";
     var organizedIntegrationTable = [];
+    var textMetadata;
 
 
 
@@ -41,13 +42,19 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
             text += makeRandomSizedNestedPattern();
         }
         $scope.info = text;
-        $scope.formattedText = formatText($scope.info);
+        textMetadata = makeTextMetaData(text);
+        $scope.formattedText = formatText(textMetadata);
         //$scope.entropy = computeEntropyBasedOnDesignPattern();
         normalizingFactor = 1 / $scope.entropy;
         $scope.normalizedEntropy = 1;
         $scope.maximumEntropy = 1;
         $scope.minimunEntropySinceMax = 1;
-        makeTextMetaData(text);
+
+        let integrationScore = 0;
+        for (let i = 0; i < textMetadata.length; i++) {
+            integrationScore += textMetadata[i].integrationLevel;
+        }
+        $scope.integrationScore = integrationScore;
     }
 
     var makeRandomSizedNestedPattern = function () {
@@ -70,7 +77,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
     var makeOrganizedIntegrationTable = function () {
         var result = [];
-        for (var i = 0; i < 50; i++) {
+        for (var i = 0; i < 100; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
         return result;
@@ -79,7 +86,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     let characterProperties = [{}];
 
     // Format text by highlighting nested design pattern parts
-    formatText = function (text, changeIndex) {
+    formatTextOld = function (text, changeIndex) {
         if (changeIndex === undefined) changeIndex = -1;
         var segment, miss, match;
         var i = 0;
@@ -140,7 +147,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return formattedText;
     }
 
-
     // Format text by highlighting nested design pattern parts
     makeTextMetaData = function (text) {
         let textMetaData = [];
@@ -158,13 +164,40 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         } while (i < text.length);
 
         textMetaData.forEach(item => {
-            if(item.innerPatternLoop !== undefined) {
+            if (item.innerPatternLoop !== undefined) {
                 item.integrationLevel = getIntegrationLevel(item.innerPatternLoop);
             }
         });
-        console.log(textMetaData[0]);
         return textMetaData;
     }
+
+    formatText = function (text, changeIndex) {
+        result = "";
+        for (var i = 0; i < textMetadata.length; i++) {
+            segmentParts = textMetadata[i];
+            result += segmentParts.miss;
+
+            if (segmentParts.match.length > 0) {
+                if (segmentParts.innerPattern === undefined) {
+                    formattedText += '<span class="match">' + segmentParts.match + '</span>';
+                } else {
+                    result += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
+                    result += '<span class="innerPattern">' + segmentParts.innerPatternLeft + '</span>';
+                    console.log(segmentParts.integrationLevel);
+                    if (segmentParts.integrationLevel == 0) {
+                        result += '<span class="loop">' + segmentParts.innerPatternLoop + '</span>';
+                    } else {
+                        result += '<span class="integratedLoop">' + segmentParts.innerPatternLoop + '</span>';
+                    }
+                    result += '<span class="innerPattern">' + segmentParts.innerPatternRight + '</span>';
+                    result += '<span>';
+                    result += '<span class="matchRight">' + segmentParts.matchRight + '</span>';
+                }
+            }
+        }
+        return result;
+    }
+
 
     var loopTable = [];
     insertLoop = function (loop) {
@@ -185,10 +218,10 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         }
     }
 
-    getIntegrationLevel = function(loop) {
-        for (i=0; i<loopTable.length; i++) {
+    getIntegrationLevel = function (loop) {
+        for (i = 0; i < loopTable.length; i++) {
             if (loopTable[i].loop == loop) {
-                return loopTable[i].count;
+                return loopTable[i].count-1;
             }
         }
     }

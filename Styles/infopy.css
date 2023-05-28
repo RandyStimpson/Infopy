@@ -95,29 +95,42 @@ body {
 .match {
     background: #BDCCC2;
     margin: 0px 1px 0px 1px;
+
+    background: #1F1F1F;
+    color: #E4EBB5;
+    background: #454545;
 }
 
 .matchLeft {
     background: #BDCCC2;
     margin: 0px 0px 0px 1px;
+    background: #1F1F1F;
+    color: #E4EBB5;
+    background: #454545;
 }
 
 .matchRight {
     background: #BDCCC2;
     margin: 0px 1px 0px 0px;
+    background: #1F1F1F;
+    color: #E4EBB5;
+    background: #454545;
 }
 
 .innerPattern {
-    background: #95BBBE;
+    color: #FFA55F;
+    background: #454545;
 }
 
-.word {
-    background: #9DCCAF;
-    margin: 0px 1px 0px 1px;
+.loop { 
+    background: #1F1F1F;
+    color: #FFA55F;
+    background: #454545;
 }
 
-.delimiter {
-    color: #BFBFBF;
+.integratedLoop {
+    background: #454545;
+    color: #589FD7;
 }
 
 .match-and-word {
