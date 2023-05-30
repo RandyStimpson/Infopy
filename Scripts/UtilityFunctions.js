@@ -3,6 +3,7 @@ const characterSet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const punctuationSet = ".!:";
 
 app.scrambleText = function (text) {
+    console.log("ScrambleText: ", text.substr(0,10));
     var scrambledText = "";
     var i;
     var randomIndex;
@@ -17,6 +18,9 @@ app.scrambleText = function (text) {
         rightText = leftoverText.substr(randomIndex + 1, leftoverText.length - randomIndex - 1);
         scrambledText += leftoverText.substr(randomIndex, 1);
         leftoverText = leftText + rightText;
+        if (i<10) {
+            console.log(scrambledText);
+        }
     }
 
     return scrambledText;

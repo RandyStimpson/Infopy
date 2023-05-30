@@ -28,8 +28,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     $scope.formattedText = "Coming Soon";
     var organizedIntegrationTable = [];
     var textMetadata;
-
-
+    let Text = "";
 
     var init = function () {
     }
@@ -41,20 +40,24 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         while (text.length < textSize) {
             text += makeRandomSizedNestedPattern();
         }
-        $scope.info = text;
         textMetadata = makeTextMetaData(text);
         $scope.formattedText = formatText(textMetadata);
-        //$scope.entropy = computeEntropyBasedOnDesignPattern();
         normalizingFactor = 1 / $scope.entropy;
         $scope.normalizedEntropy = 1;
         $scope.maximumEntropy = 1;
         $scope.minimunEntropySinceMax = 1;
+        $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        Text = text;
+    }
 
+    var calculateIntegrationScore = function(textMetadata) {
+        console.log("calculateIntegrationScore");
         let integrationScore = 0;
         for (let i = 0; i < textMetadata.length; i++) {
             integrationScore += textMetadata[i].integrationLevel;
+            console.log(textMetadata[i].integrationLevel);
         }
-        $scope.integrationScore = integrationScore;
+        return integrationScore;
     }
 
     var makeRandomSizedNestedPattern = function () {
@@ -83,69 +86,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return result;
     }
 
-    let characterProperties = [{}];
-
-    // Format text by highlighting nested design pattern parts
-    formatTextOld = function (text, changeIndex) {
-        if (changeIndex === undefined) changeIndex = -1;
-        var segment, miss, match;
-        var i = 0;
-        var j;
-        var formattedText = "";
-        var bi = 0; //belongsToIndex;
-
-        do {
-            segment = app.getPunctuationDelimitedSegment(text, i);
-            let segmentParts = app.splitSegment(segment);
-
-            //Format the miss portion of the segment
-            if (changeIndex >= i && changeIndex < i + segmentParts.miss.length) {
-                //The change occurred inside the miss
-                formattedText += segmentParts.miss.substr(0, changeIndex - i);
-                formattedText += '<span class="change-text">' + segmentParts.miss.charAt(changeIndex - i) + '</span>';
-                formattedText += segmentParts.miss.substr(changeIndex - i + 1);
-            } else {
-                formattedText += segmentParts.miss;
-            }
-            i += segmentParts.miss.length;
-
-            //Format the match portion of the segment
-            if (changeIndex >= i && changeIndex < i + segmentParts.match.length) {
-                //The change occurred inside the match
-                formattedText += '<span class="match">' + segmentParts.match.substr(0, changeIndex - i);
-                formattedText += '<span class="change-text">' + segmentParts.match.charAt(changeIndex - i) + '</span>';
-                formattedText += segmentParts.match.substr(changeIndex - i + 1) + '</span>';
-            } else {
-                segmentParts = detectInnerPattern(segmentParts);
-                if (segmentParts.innerPattern === undefined) {
-                    formattedText += '<span class="matchLeft">' + segmentParts.match + '</span>';
-                } else {
-                    formattedText += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
-                    formattedText += '<span class="innerPattern">' + segmentParts.innerPattern + '</span>';
-                    formattedText += '<span class="matchRight">' + segmentParts.matchRight + '</span>';
-
-                    innerPattern = segmentParts.innerPattern;
-                    loop = innerPattern.substr((innerPattern.length - 4) / 2, 4);
-                    insertLoop(loop);
-
-                }
-            }
-            i += segmentParts.match.length;
-
-            //Compute the values of characterProperties[] so that they can be used in the entropy calculation
-            characterProperties[bi] = {};
-            characterProperties[bi].matchLength = 4;
-            for (j = 0; j < segmentParts.miss.length; j++)
-                characterProperties[bi++].missLength = -segmentParts.miss.length;
-            for (j = 0; j < segmentParts.match.length; j++) {
-                characterProperties[bi] = {};
-                characterProperties[bi++].matchLength = segmentParts.match.length;
-            }
-
-        } while (i < text.length);
-
-        return formattedText;
-    }
 
     // Format text by highlighting nested design pattern parts
     makeTextMetaData = function (text) {
@@ -171,7 +111,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return textMetaData;
     }
 
-    formatText = function (text, changeIndex) {
+    formatText = function (textMetadata, changeIndex) {
         result = "";
         for (var i = 0; i < textMetadata.length; i++) {
             segmentParts = textMetadata[i];
@@ -179,7 +119,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
             if (segmentParts.match.length > 0) {
                 if (segmentParts.innerPattern === undefined) {
-                    formattedText += '<span class="match">' + segmentParts.match + '</span>';
+                    result += '<span class="match">' + segmentParts.match + '</span>';
                 } else {
                     result += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
                     result += '<span class="innerPattern">' + segmentParts.innerPatternLeft + '</span>';
@@ -250,15 +190,20 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        text = app.makeRandomText(3800, characterSet);
-        $scope.formattedText = formatText(text);
-        $scope.entropy = calculateEntropy();
+        console.log("characterSet1: ", characterSet1);
+        Text = app.makeRandomText(3800, characterSet1);
+        let textMetadata = makeTextMetaData(Text);
+        $scope.formattedText = formatText(textMetadata);
+        $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        //$scope.entropy = calculateEntropy();
     }
 
     $scope.scrambleText = function () {
-        text = app.scrambleText(text);
-        $scope.formattedText = formatText(text);
-        $scope.entropy = calculateEntropy();
+        Text = app.scrambleText(Text);
+        let textMetaData = makeTextMetaData(Text);
+        $scope.formattedText = formatText(textMetaData);
+        $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        //$scope.entropy = calculateEntropy();
     }
 
     $scope.makeChange = function () {
