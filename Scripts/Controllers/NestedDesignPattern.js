@@ -46,18 +46,27 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.normalizedEntropy = 1;
         $scope.maximumEntropy = 1;
         $scope.minimunEntropySinceMax = 1;
+        $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
         Text = text;
     }
 
     var calculateIntegrationScore = function (textMetadata) {
-        console.log("calculateIntegrationScore");
         let integrationScore = 0;
         for (let i = 0; i < textMetadata.length; i++) {
             if (textMetadata[i].integrationLevel !== undefined)
                 integrationScore += textMetadata[i].integrationLevel;
         }
         return integrationScore;
+    }
+
+    calculateInnerPatternCount = function (textMetadata) {
+        let count = 0;
+        for (let i = 0; i < textMetadata.length; i++ ) {
+            if (textMetadata[i].innerPattern !== undefined)
+                count++;
+        }
+        return count;
     }
 
     var makeRandomSizedNestedPattern = function () {
@@ -190,11 +199,10 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        console.log("characterSet1: ", characterSet1);
         Text = app.makeRandomText(3800, characterSet1);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata);
-        console.log("textMetadata[3]: ", textMetadata[3]);
+        $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
     }
 
@@ -202,6 +210,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         Text = app.scrambleText(Text);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata);
+        $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
         //$scope.entropy = calculateEntropy();
     }
