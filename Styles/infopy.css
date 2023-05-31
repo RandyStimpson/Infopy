@@ -213,6 +213,17 @@ td:not(.data) {
     margin-left: 40px;
 }
 
+#metadata {
+    clear: both;
+    float: left;
+    margin-top: 10px;
+    width: 200px;
+}
+
+#explaination {
+    margin-top: 20px;
+}
+
 #entropy-equation {
     width: 300px;
 }
@@ -244,3 +255,4 @@ td:not(.data) {
 .bold-text {
     font-weight: bold;
 }
+
