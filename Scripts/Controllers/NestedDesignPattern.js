@@ -50,12 +50,12 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         Text = text;
     }
 
-    var calculateIntegrationScore = function(textMetadata) {
+    var calculateIntegrationScore = function (textMetadata) {
         console.log("calculateIntegrationScore");
         let integrationScore = 0;
         for (let i = 0; i < textMetadata.length; i++) {
-            integrationScore += textMetadata[i].integrationLevel;
-            console.log(textMetadata[i].integrationLevel);
+            if (textMetadata[i].integrationLevel !== undefined)
+                integrationScore += textMetadata[i].integrationLevel;
         }
         return integrationScore;
     }
@@ -161,7 +161,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     getIntegrationLevel = function (loop) {
         for (i = 0; i < loopTable.length; i++) {
             if (loopTable[i].loop == loop) {
-                return loopTable[i].count-1;
+                return loopTable[i].count - 1;
             }
         }
     }
@@ -194,14 +194,14 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         Text = app.makeRandomText(3800, characterSet1);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata);
+        console.log("textMetadata[3]: ", textMetadata[3]);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
-        //$scope.entropy = calculateEntropy();
     }
 
     $scope.scrambleText = function () {
         Text = app.scrambleText(Text);
-        let textMetaData = makeTextMetaData(Text);
-        $scope.formattedText = formatText(textMetaData);
+        let textMetadata = makeTextMetaData(Text);
+        $scope.formattedText = formatText(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
         //$scope.entropy = calculateEntropy();
     }
