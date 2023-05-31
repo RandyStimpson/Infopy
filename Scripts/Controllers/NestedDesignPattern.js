@@ -29,6 +29,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     var organizedIntegrationTable = [];
     var textMetadata;
     let Text = "";
+    $scope.nestedPatternDescription = app.readFileToString('NestedPattern.md');
 
     var init = function () {
     }

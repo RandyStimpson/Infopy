@@ -2,6 +2,22 @@
 const characterSet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const punctuationSet = ".!:";
 
+app.readFileToString = function(fileName) {
+    let fileContent = null;
+    $.ajax({
+      url: fileName,
+      async: false,
+      success: function(data) {
+        fileContent = data;
+      },
+      error: function(xhr, status, error) {
+        console.error(`Failed to read file: ${fileName} (status ${xhr.status})`);
+      }
+    });
+    return fileContent;
+}
+
+
 app.scrambleText = function (text) {
     console.log("ScrambleText: ", text.substr(0,10));
     var scrambledText = "";

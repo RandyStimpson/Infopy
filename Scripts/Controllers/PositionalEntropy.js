@@ -3,25 +3,9 @@ app.controller("positionalEntropyCtrl", function ($scope) {
     //Choosing a character set with 64 characters will give us a maximum entropy of 6 bits per character
     var CHARACTER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -;:?,.!'123";
 
-    var startingText = readFileToString("TEXTBOX.md");
+    var startingText = app.readFileToString("TEXTBOX.md");
     console.log(startingText.length);
     
-
-    function readFileToString(fileName) {
-        let fileContent = null;
-        $.ajax({
-          url: fileName,
-          async: false,
-          success: function(data) {
-            fileContent = data;
-          },
-          error: function(xhr, status, error) {
-            console.error(`Failed to read file: ${fileName} (status ${xhr.status})`);
-          }
-        });
-        return fileContent;
-    }
-
     // TODO: In order to be able to reach a maximum entropy of 6, the number of text characters needs to be a multiple
     // of 64, the number of characters in the character set.
 
