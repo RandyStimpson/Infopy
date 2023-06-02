@@ -90,14 +90,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var stemSize = (innerPatternSize - 4) / 2;
         var stem = app.makeRandomLowerCaseText(stemSize);
         var reverseStem = stem.split("").reverse().join("");
-        console.log("integratedLoopChoices", integratedLoopChoices);
-        if (integratedLoopChoices.length === 0) {
-            var innerPattern = stem +  app.makeRandomLowerCaseText(4) + reverseStem;
-            console.log("innerPattern", innerPattern);
-        } else {
-            innerPattern = stem + integratedLoopChoices[Math.floor(integratedLoopChoices.length * Math.random())] + reverseStem;
-            console.log("innerPattern", innerPattern);
-        }
+        var innerPattern = stem + integratedLoopChoices[Math.floor(integratedLoopChoices.length * Math.random())] + reverseStem;
 
         //Embed the inner pattern randomly
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
@@ -219,7 +212,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        integratedLoopChoices = [];
+        integratedLoopChoices = makeOrganizedIntegrationTable();
         Text = app.makeRandomText(3800, characterSet1);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata);
