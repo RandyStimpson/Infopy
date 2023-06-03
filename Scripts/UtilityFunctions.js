@@ -2,24 +2,24 @@
 const characterSet2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const punctuationSet = ".!:";
 
-app.readFileToString = function(fileName) {
+app.readFileToString = function (fileName) {
     let fileContent = null;
     $.ajax({
-      url: fileName,
-      async: false,
-      success: function(data) {
-        fileContent = data;
-      },
-      error: function(xhr, status, error) {
-        console.error(`Failed to read file: ${fileName} (status ${xhr.status})`);
-      }
+        url: fileName,
+        async: false,
+        success: function (data) {
+            fileContent = data;
+        },
+        error: function (xhr, status, error) {
+            console.error(`Failed to read file: ${fileName} (status ${xhr.status})`);
+        }
     });
     return fileContent;
 }
 
 
 app.scrambleText = function (text) {
-    console.log("ScrambleText: ", text.substr(0,10));
+    console.log("ScrambleText: ", text.substr(0, 10));
     var scrambledText = "";
     var i;
     var randomIndex;
@@ -34,7 +34,7 @@ app.scrambleText = function (text) {
         rightText = leftoverText.substr(randomIndex + 1, leftoverText.length - randomIndex - 1);
         scrambledText += leftoverText.substr(randomIndex, 1);
         leftoverText = leftText + rightText;
-        if (i<10) {
+        if (i < 10) {
             console.log(scrambledText);
         }
     }
@@ -54,6 +54,10 @@ app.orderText = function (text) {
         result += txt[i];
     }
     return result;
+}
+
+app.RandomChar = function () {
+    return characterSet1.charAt(Math.floor(Math.random() * (characterSet1.length - .0)));
 }
 
 app.makeRandomText = function (length, characterSet) {

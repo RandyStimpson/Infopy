@@ -230,6 +230,12 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeChange = function () {
+        let position = Math.floor(Math.random() * (Text.length-.01));
+        Text = Text.slice(0, position) + app.RandomChar() + Text.slice(position+1);
+        let textMetadata = makeTextMetaData(Text);
+        $scope.formattedText = formatText(textMetadata, position);
+        $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
+        $scope.integrationScore = calculateIntegrationScore(textMetadata);
     }
 
     var makingChanges = false;
