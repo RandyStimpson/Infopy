@@ -55,12 +55,12 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         Text = text;
     }
 
-    $scope.insertNestedPattern= function () {
+    $scope.insertNestedPattern = function () {
         let nestedPattern = makeRandomSizedNestedPattern();
-        let startPosition = Math.floor(Math.random() * (Text.length-nestedPattern.length - 0.01));
+        let startPosition = Math.floor(Math.random() * (Text.length - nestedPattern.length - 0.01));
         Text = Text.slice(0, startPosition) + nestedPattern + Text.slice(startPosition + nestedPattern.length);
         let textMetadata = makeTextMetaData(Text);
-        $scope.formattedText = formatText(textMetadata,-1);
+        $scope.formattedText = formatText(textMetadata, -1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
     }
@@ -76,7 +76,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
     calculateInnerPatternCount = function (textMetadata) {
         let count = 0;
-        for (let i = 0; i < textMetadata.length; i++ ) {
+        for (let i = 0; i < textMetadata.length; i++) {
             if (textMetadata[i].innerPattern !== undefined)
                 count++;
         }
@@ -139,48 +139,66 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         //Delete after testing
         TextMetadata = textMetadata;
         ChangeIndex = changeIndex;
-        let = position = 0;
+        let position = 0;
 
         let result = "";
         for (var i = 0; i < textMetadata.length; i++) {
             segmentParts = textMetadata[i];
-            result += formatMiss(segmentParts.miss, changeIndex-position);
+            result += formatSegment(segmentParts.miss, "", changeIndex - position);
             position += segmentParts.miss.length;
-
             if (segmentParts.match.length > 0) {
-                position += segmentParts.match.length;
                 if (segmentParts.innerPattern === undefined) {
-                    result += '<span class="match">' + segmentParts.match + '</span>';
+                    result += formatSegment(segmentParts.match, "match", changeIndex - position);
+                    position += segmentParts.match.length;
                 } else {
-                    result += '<span class="matchLeft">' + segmentParts.matchLeft + '</span>';
-                    result += '<span class="innerPattern">' + segmentParts.innerPatternLeft + '</span>';
+                    result += formatSegment(segmentParts.matchLeft, "matchLeft", changeIndex - position);
+                    position += segmentParts.matchLeft.length;
+                    result += formatSegment(segmentParts.innerPatternLeft, "innerPattern", changeIndex - position);
+                    position += segmentParts.innerPatternLeft.length;
                     if (segmentParts.integrationLevel == 0) {
-                        result += '<span class="loop">' + segmentParts.innerPatternLoop + '</span>';
+                        result += formatSegment(segmentParts.innerPatternLoop, "loop", changeIndex - position);
+                        position += segmentParts.innerPatternLoop.length;
                     } else {
-                        result += '<span class="integratedLoop">' + segmentParts.innerPatternLoop + '</span>';
+                        result += formatSegment(segmentParts.innerPatternLoop, "integratedLoop", changeIndex - position);
+                        position += segmentParts.innerPatternLoop.length;
                     }
-                    result += '<span class="innerPattern">' + segmentParts.innerPatternRight + '</span>';
-                    result += '<span>';
-                    result += '<span class="matchRight">' + segmentParts.matchRight + '</span>';
+                    result += formatSegment(segmentParts.innerPatternRight, "innerPattern", changeIndex - position);
+                    position += segmentParts.innerPatternRight.length;
+                    result += formatSegment(segmentParts.matchRight, "matchRight", changeIndex - position);
+                    position += segmentParts.matchRight.length;
                 }
             }
         }
         return result;
     }
 
-    $scope.formatNext = function() {
-        ChangeIndex ++;
+    $scope.formatNext = function () {
+        ChangeIndex++;
         console.log("ChangeIndex", ChangeIndex);
         $scope.formattedText = formatText(TextMetadata, ChangeIndex);
     }
 
-    formatMiss= function(text, changeIndex) {
+    formatSegment = function (text, cssClass, changeIndex) {
         let result;
-        if (changeIndex == NaN || changeIndex < 0 || changeIndex >= text.length)
-            result = text;
-        else {
-            result = text.substring(0,changeIndex) + '<span class="change-text">' + text.charAt(changeIndex) + '</span>' + text.substring(changeIndex+1);
-            console.log('formatMiss',text, changeIndex, text.substring(0,changeIndex), text.charAt(changeIndex), text.substring(changeIndex+1) );
+        console.log("formatSegment", text, cssClass, changeIndex);
+        if (changeIndex == NaN || changeIndex < 0 || changeIndex >= text.length) {
+            if (cssClass === "")
+                result = text;
+            else
+                result = '<span class="' + cssClass + '">' + text + '</span>';
+        } else {
+            if (cssClass === "") {
+                result = text.substring(0, changeIndex);
+                result += '<span class="change-text">' + text.charAt(changeIndex) + '</span>';
+                result += text.substring(changeIndex + 1);
+            }
+            else {
+                console.log("cssClass", cssClass);
+                result = '<span class="' + cssClass + '">' + text.substring(0, changeIndex) + '</span>';
+                result += '<span class="change-text">' + text.charAt(changeIndex) + '</span>';
+                result += '<span class="' + cssClass + '">' + text.substring(changeIndex + 1) + '</span>';
+                console.log(result);
+            }
         }
         return result;
     }
@@ -254,8 +272,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeChange = function () {
-        let position = Math.floor(Math.random() * (Text.length-.01));
-        Text = Text.slice(0, position) + app.RandomChar() + Text.slice(position+1);
+        let position = Math.floor(Math.random() * (Text.length - .01));
+        Text = Text.slice(0, position) + app.RandomChar() + Text.slice(position + 1);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata, position);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
