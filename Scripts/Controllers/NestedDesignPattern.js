@@ -28,8 +28,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     $scope.formattedText = "Coming Soon";
     var integratedLoopChoices = [];
     var TextMetadata;
-    var position;
-    var ChangeIndex;
+    let Position;
+    let ChangeIndex;
     let Text = "";
     $scope.nestedPatternDescription = app.readFileToString('NestedPattern.md');
 
@@ -53,6 +53,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
         Text = text;
+        Position = 0;
+        ChangeIndex = -1;
     }
 
     $scope.insertNestedPattern = function () {
@@ -63,6 +65,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.formattedText = formatText(textMetadata, -1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        Position = 0;
+        ChangeIndex = -1;
     }
 
     var calculateIntegrationScore = function (textMetadata) {
@@ -138,34 +142,27 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     formatText = function (textMetadata, changeIndex) {
         //Delete after testing
         TextMetadata = textMetadata;
+
         ChangeIndex = changeIndex;
-        let position = 0;
+        Position = 0;
 
         let result = "";
         for (var i = 0; i < textMetadata.length; i++) {
             segmentParts = textMetadata[i];
-            result += formatSegment(segmentParts.miss, "", changeIndex - position);
-            position += segmentParts.miss.length;
+            result += formatSegment(segmentParts.miss, "");
             if (segmentParts.match.length > 0) {
                 if (segmentParts.innerPattern === undefined) {
-                    result += formatSegment(segmentParts.match, "match", changeIndex - position);
-                    position += segmentParts.match.length;
+                    result += formatSegment(segmentParts.match, "match");
                 } else {
-                    result += formatSegment(segmentParts.matchLeft, "matchLeft", changeIndex - position);
-                    position += segmentParts.matchLeft.length;
-                    result += formatSegment(segmentParts.innerPatternLeft, "innerPattern", changeIndex - position);
-                    position += segmentParts.innerPatternLeft.length;
+                    result += formatSegment(segmentParts.matchLeft, "matchLeft");
+                    result += formatSegment(segmentParts.innerPatternLeft, "innerPattern");
                     if (segmentParts.integrationLevel == 0) {
-                        result += formatSegment(segmentParts.innerPatternLoop, "loop", changeIndex - position);
-                        position += segmentParts.innerPatternLoop.length;
+                        result += formatSegment(segmentParts.innerPatternLoop, "loop");
                     } else {
-                        result += formatSegment(segmentParts.innerPatternLoop, "integratedLoop", changeIndex - position);
-                        position += segmentParts.innerPatternLoop.length;
+                        result += formatSegment(segmentParts.innerPatternLoop, "integratedLoop");
                     }
-                    result += formatSegment(segmentParts.innerPatternRight, "innerPattern", changeIndex - position);
-                    position += segmentParts.innerPatternRight.length;
-                    result += formatSegment(segmentParts.matchRight, "matchRight", changeIndex - position);
-                    position += segmentParts.matchRight.length;
+                    result += formatSegment(segmentParts.innerPatternRight, "innerPattern");
+                    result += formatSegment(segmentParts.matchRight, "matchRight");
                 }
             }
         }
@@ -175,12 +172,14 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     $scope.formatNext = function () {
         ChangeIndex++;
         console.log("ChangeIndex", ChangeIndex);
-        $scope.formattedText = formatText(TextMetadata, ChangeIndex);
+        $scope.formattedText = formatText(TextMetadata,ChangeIndex);
     }
 
-    formatSegment = function (text, cssClass, changeIndex) {
+    formatSegment = function (text, cssClass) {
         let result;
-        console.log("formatSegment", text, cssClass, changeIndex);
+        let changeIndex = ChangeIndex-Position;
+        Position += text.length;
+        console.log("formatSegment", text, cssClass, Position, changeIndex);
         if (changeIndex == NaN || changeIndex < 0 || changeIndex >= text.length) {
             if (cssClass === "")
                 result = text;
@@ -257,25 +256,27 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         integratedLoopChoices = makeOrganizedIntegrationTable();
         Text = app.makeRandomText(3800, characterSet1);
         let textMetadata = makeTextMetaData(Text);
-        $scope.formattedText = formatText(textMetadata, -1);
+        $scope.formattedText = formatText(textMetadata,-1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        ChangeIndex = -1; 
+        Position = 0;
     }
 
     $scope.scrambleText = function () {
         Text = app.scrambleText(Text);
         let textMetadata = makeTextMetaData(Text);
-        $scope.formattedText = formatText(textMetadata, -1);
+        $scope.formattedText = formatText(textMetadata,-1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
         //$scope.entropy = calculateEntropy();
     }
 
     $scope.makeChange = function () {
-        let position = Math.floor(Math.random() * (Text.length - .01));
-        Text = Text.slice(0, position) + app.RandomChar() + Text.slice(position + 1);
+        let changeLocation = Math.floor(Math.random() * (Text.length - .01));
+        Text = Text.slice(0, changeLocation) + app.RandomChar() + Text.slice(changeLocation + 1);
         let textMetadata = makeTextMetaData(Text);
-        $scope.formattedText = formatText(textMetadata, position);
+        $scope.formattedText = formatText(textMetadata, changeLocation);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
     }
