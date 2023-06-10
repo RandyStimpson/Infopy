@@ -26,8 +26,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     const textSize = 3800;
     const minSemiPalondromeSize = 12;
     $scope.formattedText = "Coming Soon";
-    var integratedLoopChoices = [];
-    var TextMetadata;
+    let IntegratedSegmentChoices = [];
+    let TextMetadata;
     let Position;
     let ChangeIndex;
     let Text = "";
@@ -40,7 +40,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     $scope.makeOrganizedText = function () {
         let text = "";
         let i = 0;
-        integratedLoopChoices = makeOrganizedIntegrationTable();
+        IntegratedSegmentChoices = makeOrganizedIntegrationTable();
         while (text.length < textSize) {
             text += makeRandomSizedNestedPattern();
         }
@@ -94,9 +94,9 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
         innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
         var stemSize = (innerPatternSize - 4) / 2;
-        var stem = app.makeRandomLowerCaseText(stemSize);
+        var stem = getIntegratedSegmentChoice() + app.makeRandomLowerCaseText(stemSize-4);
         var reverseStem = stem.split("").reverse().join("");
-        var innerPattern = stem + integratedLoopChoices[Math.floor(integratedLoopChoices.length * Math.random())] + reverseStem;
+        var innerPattern = stem + getIntegratedSegmentChoice() + reverseStem;
 
         //Embed the inner pattern randomly
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
@@ -105,27 +105,33 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return result;
     }
 
+    var getIntegratedSegmentChoice = function () {
+        return IntegratedSegmentChoices[Math.floor(IntegratedSegmentChoices.length * Math.random())];
+    }
+
     var makeOrganizedIntegrationTable = function () {
         var result = [];
         for (var i = 0; i < 100; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
+        console.log("makeOrganizedInte", result);
         return result;
     }
 
 
-    // Format text by highlighting nested design pattern parts
+    // Build metedata about text for formatting and measuring integration
     makeTextMetaData = function (text) {
         let textMetaData = [];
         let segment;
         let i = 0;
-        loopTable = [];
+        segmentTable = [];
         do {
             segment = app.getPunctuationDelimitedSegment(text, i);
             segmentParts = app.splitSegment(segment);
             segmentParts = detectInnerPattern(segmentParts);
             if (segmentParts.innerPattern !== undefined) {
-                insertLoop(segmentParts.innerPatternLoop);
+                insertSegment(segmentParts.innerPatternLeft);
+                insertSegment(segmentParts.innerPatternRight);
             }
             textMetaData.push(segmentParts)
             i += segment.length;
@@ -202,31 +208,18 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return result;
     }
 
-    var loopTable = [];
-    insertLoop = function (loop) {
-        loopIsInTable = false;
-        loopTable.forEach(element => {
-            if (element.loop === loop) {
-                element.count++;
-                loopIsInTable = true;
-                return true;
-            }
-        });
-        if (!loopIsInTable) {
-            loopTable[loopTable.length] = {
-                loop: loop,
-                count: 1
-            };
-            return false;
-        }
+    var segmentTable = [];
+    insertSegment = function (segment) {
+       segmentTable[segmentTable.length] = segment;
     }
 
     getIntegrationLevel = function (loop) {
-        for (i = 0; i < loopTable.length; i++) {
-            if (loopTable[i].loop == loop) {
-                return loopTable[i].count - 1;
-            }
+        result = 0;
+        for (i = 0; i < segmentTable.length; i++) {
+            if (segmentTable[i].indexOf(loop) >= 0)
+                result ++;
         }
+        return result;
     }
 
     detectInnerPattern = function (segment) {
@@ -253,7 +246,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.makeRandomText = function () {
-        integratedLoopChoices = makeOrganizedIntegrationTable();
+        IntegratedSegmentChoices = makeOrganizedIntegrationTable();
         Text = app.makeRandomText(3800, characterSet1);
         let textMetadata = makeTextMetaData(Text);
         $scope.formattedText = formatText(textMetadata,-1);
