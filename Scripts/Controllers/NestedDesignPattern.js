@@ -42,7 +42,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         let i = 0;
         IntegratedSegmentChoices = makeOrganizedIntegrationTable();
         while (text.length < textSize) {
-            text += makeRandomSizedNestedPattern();
+            text += makeNestedIntegratedPattern();
         }
         textMetadata = makeTextMetaData(text);
         $scope.formattedText = formatText(textMetadata, -1);
@@ -58,7 +58,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.insertNestedPattern = function () {
-        let nestedPattern = makeRandomSizedNestedPattern();
+        let nestedPattern = makeNestedPattern();
         let startPosition = Math.floor(Math.random() * (Text.length - nestedPattern.length - 0.01));
         Text = Text.slice(0, startPosition) + nestedPattern + Text.slice(startPosition + nestedPattern.length);
         let textMetadata = makeTextMetaData(Text);
@@ -87,7 +87,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return count;
     }
 
-    var makeRandomSizedNestedPattern = function () {
+    var makeNestedIntegratedPattern = function () {
         var nestedPatternSize = 14 + Math.floor(16 * Math.random());
 
         //Make a semipalendrome of random size that that fits inside the nested pattern
@@ -102,6 +102,25 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
         var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
+        return result;
+    }
+
+    makeNestedPattern = function () {
+        var nestedPatternSize = 14 + Math.floor(16 * Math.random());
+
+        //Make a semipalendrome of random size that that fits inside the nested pattern
+        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
+        innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
+        var stemSize = (innerPatternSize - 4) / 2;
+        var stem = app.makeRandomLowerCaseText(stemSize);
+        var reverseStem = stem.split("").reverse().join("");
+        var innerPattern = stem + app.makeRandomLowerCaseText(4) + reverseStem;
+
+        //Embed the inner pattern randomly
+        var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
+        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
+        result = app.randomUppercaseLetter() + result + app.randomPunctuation();
+        console.log("Nested Pattern", result);
         return result;
     }
 
@@ -177,7 +196,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
     $scope.formatNext = function () {
         ChangeIndex++;
-        console.log("ChangeIndex", ChangeIndex);
         $scope.formattedText = formatText(TextMetadata,ChangeIndex);
     }
 
@@ -185,7 +203,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         let result;
         let changeIndex = ChangeIndex-Position;
         Position += text.length;
-        console.log("formatSegment", text, cssClass, Position, changeIndex);
         if (changeIndex == NaN || changeIndex < 0 || changeIndex >= text.length) {
             if (cssClass === "")
                 result = text;
@@ -198,11 +215,9 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
                 result += text.substring(changeIndex + 1);
             }
             else {
-                console.log("cssClass", cssClass);
                 result = '<span class="' + cssClass + '">' + text.substring(0, changeIndex) + '</span>';
                 result += '<span class="change-text">' + text.charAt(changeIndex) + '</span>';
                 result += '<span class="' + cssClass + '">' + text.substring(changeIndex + 1) + '</span>';
-                console.log(result);
             }
         }
         return result;
