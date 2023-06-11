@@ -11,6 +11,22 @@
         <button ng-click="makeOrganizedText()">Organize</button>
         <button ng-click="evolve()">Evolve</button>
     </div>
+    <div id="explaination">
+        <div id="pattern-description">
+            {{ nestedPatternDescription }}
+        </div>
+        <div id="nestedPatternExamples">
+
+        </div>
+    </div>
+    <div id="examples">
+        EXAMPLES
+        <div id = "example-group">
+            <div class="example">Asdfghj<span class="loop">xvxy</span>jhgfdsyes!</div>
+            <div class="example">Bpoiuyt<span class="integrated-loop">dfgh</span>tyuinb.</div>
+            <div class="example">Asdfghj<span class="loop">jhgd</span>jhgfdsyes!</div>
+        </div>
+    </div>
     <div id="metadata">
         <div class="information-group">
             <div>Starting Entropy: {{ startingEntropy | number : 5}}</div>
@@ -19,14 +35,6 @@
         <div class="information-group">
             <div>Inner Pattern Count: {{ innerPatternCount }}</div>
             <div>Integration Score: {{ integrationScore }}</div>
-        </div>
-    </div>
-    <div id="explaination">
-        <div id="pattern-description">
-            {{ nestedPatternDescription }}
-        </div>
-        <div id="nestedPatternExamples">
-
         </div>
     </div>
 </div>
