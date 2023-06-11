@@ -86,32 +86,31 @@ body {
 }
 
 .change-text {
-    background-color: #5585D5;
     background-color: #0858D1;
     color: white;
     padding: 0px 1px 0px 1px;
 }
 
 .match {
-    margin: 0px 1px 0px 1px;
+    padding: 0px 1px 0px 1px;
     color: #E4EBB5;
     background: #454545;
 }
 
 
-.matchLeft {
-    margin: 0px 0px 0px 1px;
+.match-left {
+    padding: 0px 0px 0px 1px;
     color: #E4EBB5;
     background: #454545;
 }
 
-.matchRight {
-    margin: 0px 1px 0px 0px;
+.match-right {
+    padding: 0px 1px 0px 0px;
     color: #E4EBB5;
     background: #454545;
 }
 
-.innerPattern {
+.inner-pattern {
     color: #FFA55F;
     background: #454545;
 }
@@ -120,12 +119,14 @@ body {
     color: #FFA55F;
     background: #454545;
     padding-left: 2px;
-    padding-right: 2px;
+    padding-right: 4px;
+    font-style: italic;
 }
 
-.integratedLoop {
+.integrated-loop {
     background: #454545;
     color: #589FD7;
+    color:#C680F5;
     padding-left: 2px;
     padding-right: 2px;
 }
@@ -231,7 +232,9 @@ td:not(.data) {
 }
 
 #example-group {
+    background: #454545;
     margin-top: 10px;
+    padding: 10px;
 }
 
 #entropy-equation {

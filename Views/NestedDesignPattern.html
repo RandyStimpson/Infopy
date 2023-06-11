@@ -4,7 +4,7 @@
     <button ng-click="makeChange()">Make Change</button>
     <button id="mcc" ng-click="makeContinuousChanges()">Make Continuous Changes</button>
     <div class="rightside-button-container">
-        <button ng-click="formatNext()">Next</button>
+        <button style="display: none;" ng-click="formatNext()">Next</button>
         <button ng-click="insertNestedPattern()">Insert</button>
         <button ng-click="scrambleText()">Scramble</button>
         <button ng-click="makeRandomText()">Random</button>
@@ -22,9 +22,9 @@
     <div id="examples">
         EXAMPLES
         <div id = "example-group">
-            <div class="example">Asdfghj<span class="loop">xvxy</span>jhgfdsyes!</div>
-            <div class="example">Bpoiuyt<span class="integrated-loop">dfgh</span>tyuinb.</div>
-            <div class="example">Asdfghj<span class="loop">jhgd</span>jhgfdsyes!</div>
+            <div class="example"><span class="match">A<span class="inner-pattern">sdfghj<span class="loop">xvxy</span>jhgfds</span>yes!</span></div>
+            <div class="example"><span class="match">Bpo<span class="inner-pattern">iuyt<span class="integrated-loop">dfgh</span>tyui</span>nb.</span></div>
+            <div class="example"><span class="match">Xx<span class="inner-pattern">yuiop<span class="loop">jhgd</span>poiuy</span>cool!</span></div>
         </div>
     </div>
     <div id="metadata">

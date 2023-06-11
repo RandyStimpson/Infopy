@@ -179,15 +179,15 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
                 if (segmentParts.innerPattern === undefined) {
                     result += formatSegment(segmentParts.match, "match");
                 } else {
-                    result += formatSegment(segmentParts.matchLeft, "matchLeft");
-                    result += formatSegment(segmentParts.innerPatternLeft, "innerPattern");
+                    result += formatSegment(segmentParts.matchLeft, "match-left");
+                    result += formatSegment(segmentParts.innerPatternLeft, "inner-pattern");
                     if (segmentParts.integrationLevel == 0) {
                         result += formatSegment(segmentParts.innerPatternLoop, "loop");
                     } else {
-                        result += formatSegment(segmentParts.innerPatternLoop, "integratedLoop");
+                        result += formatSegment(segmentParts.innerPatternLoop, "integrated-loop");
                     }
-                    result += formatSegment(segmentParts.innerPatternRight, "innerPattern");
-                    result += formatSegment(segmentParts.matchRight, "matchRight");
+                    result += formatSegment(segmentParts.innerPatternRight, "inner-pattern");
+                    result += formatSegment(segmentParts.matchRight, "match-right");
                 }
             }
         }
