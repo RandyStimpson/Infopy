@@ -195,8 +195,13 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     $scope.formatNext = function () {
+        //This function is only used to test formating
         ChangeIndex++;
         $scope.formattedText = formatText(TextMetadata,ChangeIndex);
+    }
+
+    $scope.evolve = function () {
+        $scope.formattedText = app.readFileToString("NestedPatternChallenge.md");
     }
 
     formatSegment = function (text, cssClass) {
