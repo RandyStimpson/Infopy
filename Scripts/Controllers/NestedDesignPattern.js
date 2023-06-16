@@ -294,7 +294,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
     }
 
-    var makingChanges = false;
+    let makingChanges = false;
     $scope.makeContinuousChanges = function () {
         if (makingChanges === true) {
             makingChanges = false;
@@ -306,7 +306,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         makeChangeRecursive();
     }
 
-    var makeChangeRecursive = function () {
+    let makeChangeRecursive = function () {
         if (makingChanges === false)
             return;
         $scope.makeChange();

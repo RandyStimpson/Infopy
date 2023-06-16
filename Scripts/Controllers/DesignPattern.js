@@ -76,7 +76,7 @@ app.controller("designPatternCtrl", function ($scope) {
             $scope.minimunEntropySinceMax = $scope.normalizedEntropy;
     }
 
-    var makingChanges = false;
+    let makingChanges = false;
     $scope.makeContinuousChanges = function () {
         if (makingChanges === true) {
             makingChanges = false;
@@ -88,7 +88,7 @@ app.controller("designPatternCtrl", function ($scope) {
         makeChangeRecursive();
     }
 
-    var makeChangeRecursive = function () {
+    let makeChangeRecursive = function () {
         if (makingChanges === false)
             return;
         $scope.makeChange();
