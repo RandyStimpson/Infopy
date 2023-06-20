@@ -87,38 +87,38 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return count;
     }
 
-    var makeNestedIntegratedPattern = function () {
-        var nestedPatternSize = 14 + Math.floor(16 * Math.random());
+    let makeNestedIntegratedPattern = function () {
+        let nestedPatternSize = 14 + Math.floor(16 * Math.random());
 
         //Make a semipalendrome of random size that that fits inside the nested pattern
-        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
+        let innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
         innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
-        var stemSize = (innerPatternSize - 4) / 2;
-        var stem = getIntegratedSegmentChoice() + app.makeRandomLowerCaseText(stemSize-4);
-        var reverseStem = stem.split("").reverse().join("");
-        var innerPattern = stem + getIntegratedSegmentChoice() + reverseStem;
+        let stemSize = (innerPatternSize - 4) / 2;
+        let stem = getIntegratedSegmentChoice() + app.makeRandomLowerCaseText(stemSize-4);
+        let reverseStem = stem.split("").reverse().join("");
+        let innerPattern = stem + getIntegratedSegmentChoice() + reverseStem;
 
         //Embed the inner pattern randomly
-        var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
-        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
+        let startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
+        let result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
         return result;
     }
 
     makeNestedPattern = function () {
-        var nestedPatternSize = 14 + Math.floor(16 * Math.random());
+        let nestedPatternSize = 14 + Math.floor(16 * Math.random());
 
         //Make a semipalendrome of random size that that fits inside the nested pattern
-        var innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
+        let innerPatternSize = minSemiPalondromeSize + Math.floor((nestedPatternSize - 2 - minSemiPalondromeSize) * Math.random());
         innerPatternSize = innerPatternSize - innerPatternSize % 2; //Make even number
-        var stemSize = (innerPatternSize - 4) / 2;
-        var stem = app.makeRandomLowerCaseText(stemSize);
-        var reverseStem = stem.split("").reverse().join("");
-        var innerPattern = stem + app.makeRandomLowerCaseText(4) + reverseStem;
+        let stemSize = (innerPatternSize - 4) / 2;
+        let stem = app.makeRandomLowerCaseText(stemSize);
+        let reverseStem = stem.split("").reverse().join("");
+        let innerPattern = stem + app.makeRandomLowerCaseText(4) + reverseStem;
 
         //Embed the inner pattern randomly
-        var startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
-        var result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
+        let startPosition = Math.floor((nestedPatternSize - innerPatternSize) * Math.random());
+        let result = app.makeRandomLowerCaseText(startPosition) + innerPattern + app.makeRandomLowerCaseText(nestedPatternSize - innerPattern.length - startPosition - 2);
         result = app.randomUppercaseLetter() + result + app.randomPunctuation();
         console.log("Nested Pattern", result);
         return result;
@@ -129,11 +129,10 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     var makeOrganizedIntegrationTable = function () {
-        var result = [];
+        let result = [];
         for (var i = 0; i < 100; i++) {
             result[i] = app.makeRandomLowerCaseText(4);
         }
-        console.log("makeOrganizedInte", result);
         return result;
     }
 
@@ -234,7 +233,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
     }
 
     getIntegrationLevel = function (loop) {
-        result = 0;
+        let result = 0;
         for (i = 0; i < segmentTable.length; i++) {
             if (segmentTable[i].indexOf(loop) >= 0)
                 result ++;
@@ -316,14 +315,13 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
 
 
 
-    var delimiterCount;
-    var calculateEntropy = function () {
+    let calculateEntropy = function () {
         var sum = 0, i;
         //To be supplied
         return -sum;
     }
 
-    var entropyTerm = function (i) {
+    let entropyTerm = function (i) {
         var p, result, length;
         //To be supplied
         result = p * Math.log(p);
