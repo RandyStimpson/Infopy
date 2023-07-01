@@ -52,6 +52,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.minimunEntropySinceMax = 1;
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        $scope.entropy = computeEntropyBasedOnNestedDesignPattern();
+        $scope.startingEntropy = $scope.entropy;
         Text = text;
         Position = 0;
         ChangeIndex = -1;
@@ -65,6 +67,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.formattedText = formatText(textMetadata, -1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        $scope.entropy = computeEntropyBasedOnNestedDesignPattern();
         Position = 0;
         ChangeIndex = -1;
     }
@@ -193,6 +196,40 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         return result;
     }
 
+    computeEntropyBasedOnNestedDesignPattern = function () {
+        // The entropy calculation will not take into account integration so the calculated value
+        // will not be a low as it actually is when there is integration.
+
+        let p;
+        let sum = 0;
+
+        // Each character contributes to entropy based on the probability of the segment it belongs to.
+        for (let i = 0; i < TextMetadata.length; i++) {
+            let segmentParts = TextMetadata[i];
+            if (segmentParts.miss.length > 0) {
+                p = pOfMiss(segmentParts.miss.length);
+                entropyTerm = p * Math.log(p);
+
+                // Each character contributes and entropy term.
+                sum += segmentParts.miss.length * entropyTerm;
+            }
+            if (segmentParts.match.length > 0) {
+                p = pOfMatch(segmentParts.match.length);
+                if (segmentParts.innerPattern !== undefined) {
+                    let pOfInnerPattern = Math.pow(26,-(segmentParts.innerPattern.length-4)/2);
+                    //Determine to number of location an inner pattern of this size can occur in the outer design pattern.
+                    let locations = segmentParts.match.length - segmentParts.innerPattern.length - 1;
+                    p = p * pOfInnerPattern * locations;
+                }
+                // Each character contributes and entropy term.
+                entropyTerm = p * Math.log(p);
+                sum += segmentParts.match.length * entropyTerm;                
+            }
+        }
+        return -sum;
+    }
+
+
     $scope.formatNext = function () {
         //This function is only used to test formating
         ChangeIndex++;
@@ -271,6 +308,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.formattedText = formatText(textMetadata,-1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        $scope.entropy = computeEntropyBasedOnNestedDesignPattern();
+        $scope.startingEntropy = $scope.entropy;
         ChangeIndex = -1; 
         Position = 0;
     }
@@ -281,7 +320,8 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.formattedText = formatText(textMetadata,-1);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
-        //$scope.entropy = calculateEntropy();
+        $scope.entropy = computeEntropyBasedOnNestedDesignPattern();
+        $scope.startingEntropy = $scope.entropy;
     }
 
     $scope.makeChange = function () {
@@ -291,6 +331,7 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.formattedText = formatText(textMetadata, changeLocation);
         $scope.innerPatternCount = calculateInnerPatternCount(textMetadata);
         $scope.integrationScore = calculateIntegrationScore(textMetadata);
+        $scope.entropy = computeEntropyBasedOnNestedDesignPattern();
     }
 
     let makingChanges = false;
@@ -311,21 +352,6 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
         $scope.makeChange();
         $scope.$apply(); //updates the UI
         setTimeout(makeChangeRecursive, 100);
-    }
-
-
-
-    let calculateEntropy = function () {
-        var sum = 0, i;
-        //To be supplied
-        return -sum;
-    }
-
-    let entropyTerm = function (i) {
-        var p, result, length;
-        //To be supplied
-        result = p * Math.log(p);
-        return result;
     }
 
     init();

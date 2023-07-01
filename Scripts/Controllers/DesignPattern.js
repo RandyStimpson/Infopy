@@ -24,7 +24,6 @@
 app.controller("designPatternCtrl", function ($scope) {
 
     var belongsTo = [];
-    var normalizingFactor;
     const textSize = 3800;
 
     init = function () {
@@ -35,13 +34,12 @@ app.controller("designPatternCtrl", function ($scope) {
         $scope.info = app.scrambleText($scope.info);
         $scope.formattedText = formatText($scope.info, -1);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
-        $scope.normalizedEntropy = Math.round($scope.entropy * normalizingFactor);
-        if ($scope.normalizedEntropy > $scope.maximumEntropy) {
-            $scope.maximumEntropy = $scope.normalizedEntropy;
-            $scope.minimunEntropySinceMax = $scope.normalizedEntropy;
+        if ($scope.entropy > $scope.maximumEntropy) {
+            $scope.maximumEntropy = $scope.entropy;
+            $scope.minimunEntropySinceMax = $scope.entropy;
         }
-        if ($scope.normalizedEntropy < $scope.minimunEntropySinceMax)
-            $scope.minimunEntropySinceMax = $scope.normalizedEntropy;
+        if ($scope.entropy < $scope.minimunEntropySinceMax)
+            $scope.minimunEntropySinceMax = $scope.entropy;
     }
 
     $scope.makeOrganizedText = function () {
@@ -55,10 +53,9 @@ app.controller("designPatternCtrl", function ($scope) {
         $scope.info = text;
         $scope.formattedText = formatText($scope.info);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
-        normalizingFactor = 1 / $scope.entropy;
-        $scope.normalizedEntropy = 1;
-        $scope.maximumEntropy = 1;
-        $scope.minimunEntropySinceMax = 1;
+        $scope.startingEntropy = $scope.entropy;
+        $scope.maximumEntropy = $scope.entropy;
+        $scope.minimunEntropySinceMax = $scope.entropy;
     }
 
     $scope.makeChange = function () {
@@ -67,13 +64,12 @@ app.controller("designPatternCtrl", function ($scope) {
         $scope.info = $scope.info.substr(0, r) + randomChar + $scope.info.substr(r + 1);
         $scope.formattedText = formatText($scope.info, r);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
-        $scope.normalizedEntropy = Math.round($scope.entropy * normalizingFactor);
-        if ($scope.normalizedEntropy > $scope.maximumEntropy) {
-            $scope.maximumEntropy = $scope.normalizedEntropy;
-            $scope.minimunEntropySinceMax = $scope.normalizedEntropy;
+        if ($scope.entropy > $scope.maximumEntropy) {
+            $scope.maximumEntropy = $scope.entropy;
+            $scope.minimunEntropySinceMax = $scope.entropy;
         }
-        if ($scope.normalizedEntropy < $scope.minimunEntropySinceMax)
-            $scope.minimunEntropySinceMax = $scope.normalizedEntropy;
+        if ($scope.entropy < $scope.minimunEntropySinceMax)
+            $scope.minimunEntropySinceMax = $scope.entropy;
     }
 
     let makingChanges = false;
@@ -100,66 +96,9 @@ app.controller("designPatternCtrl", function ($scope) {
         $scope.info = app.makeRandomText(textSize, characterSet1);
         $scope.formattedText = formatText($scope.info);
         $scope.entropy = computeEntropyBasedOnDesignPattern();
-        normalizingFactor = 10000 / $scope.entropy;
-        $scope.normalizedEntropy = 10000;
-        $scope.maximumEntropy = 10000;
-        $scope.minimunEntropySinceMax = 10000;
-    }
-
-    // The probability that a string of length n is a Match
-    var pOfMatchLookupTable = [];
-    pOfMatch = function (n) {
-        var pOfPunctuation = 3 / characterSet1.length;
-        var pOfLowerCase = 26 / characterSet1.length;
-        var pOfUpperCase = 26 / characterSet1.length;
-        if (n <= 2)
-            return 0;
-        if (pOfMatchLookupTable[n] === undefined)
-            pOfMatchLookupTable[n] = pOfUpperCase * Math.pow(pOfLowerCase, n - 2) * pOfPunctuation;
-        return pOfMatchLookupTable[n];
-    }
-
-    /*
-    This function computes that probability that a string of length N is a Miss.
-
-    A string of length N is a miss if the first N-1 characters of the string is a Miss
-    and it is still a miss when on more character is added.
-    */
-    var pOfMissLookupTable = [];
-    pOfMiss = function (n) {
-        if (n <= 2)
-            return 1;
-        if (pOfMissLookupTable[n] == undefined)
-            pOfMissLookupTable[n] = pOfMiss(n - 1) * (1 - pOfStringEndingWithSubpattern(n - 1) * 3 / 55);
-        return pOfMissLookupTable[n];
-    }
-
-    /***************************************************************************************************
-    
-    This function computes the probability that a string of length n will end with a Subpattern.
-    Examples of strings of length 4 that end with a Subpattern are these:
-
-    ABCd   ends with Subpattern Cd 
-    ABcd   ends with Subpattern Bcd
-    Abcd   ends with Subpattern Abcd
-        
-    Thus the probability that a string of length 4 ends with a subpattern is giving by
-
-    (probility that the string end with a SubPattern of length 2) +
-    (probility that the string end with a SubPattern of length 3) +
-    (probility that the string end with a SubPattern of length 4)
-
-    Note that this is a geometric sum minus the first two terms
-    
-    ***************************************************************************************************/
-    pOfStringEndingWithSubpattern = function (n) {
-        return geometricSum(n, 26 / 55) - 1 - 26 / 55;
-    }
-
-    geometricSum = function (n, ratio) {
-        var numerator = 1 - Math.pow(ratio, n + 1);
-        var denominator = 1 - ratio;
-        return numerator / denominator;
+        $scope.startingEntropy = $scope.entropy;
+        $scope.maximumEntropy = $scope.entropy;
+        $scope.minimunEntropySinceMax = $scope.entropy;
     }
 
 
@@ -223,6 +162,7 @@ app.controller("designPatternCtrl", function ($scope) {
         var p;
         sum = 0;
 
+        // Each character contributes to entropy based on the probability of the segment it belongs to.
         for (i = 0; i <= $scope.info.length; i++) {
            if (belongsTo[i] < 0) p = pOfMiss(-belongsTo[i]); 
            if (belongsTo[i] > 0) p = pOfMatch(belongsTo[i]);

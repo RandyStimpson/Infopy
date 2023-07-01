@@ -135,3 +135,59 @@ app.splitSegment = function (segment) {
     return result;
 }
 
+    // The probability that a string of length n is a Match
+    var pOfMatchLookupTable = [];
+    pOfMatch = function (n) {
+        var pOfPunctuation = 3 / characterSet1.length;
+        var pOfLowerCase = 26 / characterSet1.length;
+        var pOfUpperCase = 26 / characterSet1.length;
+        if (n <= 2)
+            return 0;
+        if (pOfMatchLookupTable[n] === undefined)
+            pOfMatchLookupTable[n] = pOfUpperCase * Math.pow(pOfLowerCase, n - 2) * pOfPunctuation;
+        return pOfMatchLookupTable[n];
+    }
+
+    /*
+    This function computes that probability that a string of length N is a Miss.
+
+    A string of length N is a miss if the first N-1 characters of the string is a Miss
+    and it is still a miss when on more character is added.
+    */
+    var pOfMissLookupTable = [];
+    var pOfMiss = function (n) {
+        if (n <= 2)
+            return 1;
+        if (pOfMissLookupTable[n] == undefined)
+            pOfMissLookupTable[n] = pOfMiss(n - 1) * (1 - pOfStringEndingWithSubpattern(n - 1) * 3 / 55);
+        return pOfMissLookupTable[n];
+    }
+
+    /***************************************************************************************************
+    
+    This function computes the probability that a string of length n will end with a Subpattern.
+    Examples of strings of length 4 that end with a Subpattern are these:
+
+    ABCd   ends with Subpattern Cd 
+    ABcd   ends with Subpattern Bcd
+    Abcd   ends with Subpattern Abcd
+        
+    Thus the probability that a string of length 4 ends with a subpattern is giving by
+
+    (probility that the string end with a SubPattern of length 2) +
+    (probility that the string end with a SubPattern of length 3) +
+    (probility that the string end with a SubPattern of length 4)
+
+    Note that this is a geometric sum minus the first two terms
+    
+    ***************************************************************************************************/
+    pOfStringEndingWithSubpattern = function (n) {
+        return geometricSum(n, 26 / 55) - 1 - 26 / 55;
+    }
+
+    geometricSum = function (n, ratio) {
+        var numerator = 1 - Math.pow(ratio, n + 1);
+        var denominator = 1 - ratio;
+        return numerator / denominator;
+    }
+
