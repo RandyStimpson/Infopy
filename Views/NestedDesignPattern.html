@@ -29,8 +29,10 @@
     </div>
     <div id="metadata">
         <div class="information-group">
-            <div>Starting Entropy: {{ startingEntropy | number : 8}}</div>
-            <div>Entropy: {{ entropy | number : 8 }}</div>
+            <div ng-hide="startingEntropy >= 1">Starting Entropy: {{ startingEntropy | number : 10}}</div>
+            <div ng-hide="startingEntropy < 1">Starting Entropy: {{ startingEntropy | number : 2}}</div>
+            <div ng-hide="entropy >= 1">Entropy: {{ entropy | number : 10 }}</div>
+            <div ng-hide="entropy < 1">Entropy: {{ entropy | number : 2 }}</div>
         </div>
         <div class="information-group">
             <div>Inner Pattern Count: {{ innerPatternCount }}</div>

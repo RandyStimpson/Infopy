@@ -216,10 +216,9 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
             if (segmentParts.match.length > 0) {
                 p = pOfMatch(segmentParts.match.length);
                 if (segmentParts.innerPattern !== undefined) {
-                    let pOfInnerPattern = Math.pow(26,-(segmentParts.innerPattern.length-4)/2);
                     //Determine to number of location an inner pattern of this size can occur in the outer design pattern.
                     let locations = segmentParts.match.length - segmentParts.innerPattern.length - 1;
-                    p = p * pOfInnerPattern * locations;
+                    p = p * pOfInnerPattern(segmentParts.innerPattern.length) * locations;
                 }
                 // Each character contributes and entropy term.
                 entropyTerm = p * Math.log(p);
@@ -227,6 +226,14 @@ app.controller("nestedDesignPatternCtrl", function ($scope) {
             }
         }
         return -sum;
+    }
+
+    //Use lookup table to reduce Math.pow calls and improve efficiency
+    pOfInnerPatternLookupTable = [];
+    pOfInnerPattern = function (length) {
+        if (pOfInnerPatternLookupTable[length] === undefined)
+            pOfInnerPatternLookupTable[length] = Math.pow(26,-(length-4)/2);
+        return pOfInnerPatternLookupTable[length];
     }
 
 
