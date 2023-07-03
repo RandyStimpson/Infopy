@@ -89,25 +89,26 @@ body {
 
 .change-text {
     background-color: #0858D1;
+    background-color: red;
     color: white;
     padding: 0px 1px 0px 1px;
 }
 
 .match {
-    padding: 0px 1px 0px 1px;
+    margin: 0px 1px 0px 1px;
     color: #E4EBB5;
     background: #454545;
 }
 
 
 .match-left {
-    padding: 0px 0px 0px 1px;
+    margin: 0px 0px 0px 1px;
     color: #E4EBB5;
     background: #454545;
 }
 
 .match-right {
-    padding: 0px 1px 0px 0px;
+    margin: 0px 1px 0px 0px;
     color: #E4EBB5;
     background: #454545;
 }
