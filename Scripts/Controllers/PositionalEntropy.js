@@ -1,7 +1,8 @@
 app.controller("positionalEntropyCtrl", function ($scope) {
 
-    //Choosing a character set with 64 characters will give us a maximum entropy of 6 bits per character
-    var CHARACTER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz -;:?,.!'123";
+    // Choosing a character set with 64 characters will give us a maximum entropy of 6 bits per character. Note that QXYZ
+    // were removed to stay with in the limit of 64 characters including needed puctuation and numbers.
+    var CHARACTER_SET = "ABCDEFGHIJKLMNOPRSTUVWabcdefghijklmnopqrstuvwxyz -;:?,.!%'012346";
 
     var startingText = app.readFileToString("TEXTBOX.md");
     console.log(startingText.length);
